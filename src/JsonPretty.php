@@ -51,7 +51,7 @@ class JsonPretty
     {
         return "<pre>" .
             implode(PHP_EOL, $this->fifo) .
-            ((count($this->lifo) === 1 && count($this->fifo) === 1) ? '' : PHP_EOL) .
+            PHP_EOL .
             implode(PHP_EOL, array_reverse($this->lifo))
         . "</pre>";
     }

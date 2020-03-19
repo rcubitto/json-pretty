@@ -11,7 +11,7 @@ class JsonPrettyTest extends TestCase
     function format_empty_array()
     {
         $sample = [];
-        $output = '<pre><span style="color:black">{</span><span style="color:black">}</span></pre>';
+        $output = '<pre><span style="color:black">{</span>'.PHP_EOL.'<span style="color:black">}</span></pre>';
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
