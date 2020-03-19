@@ -17,17 +17,10 @@ class JsonPretty
 
     public static function format($sample)
     {
-        return (new self)->process((array) $sample);
+        return (new self)->analyze((array) $sample)->build();
     }
 
     //
-
-    private function process($sample)
-    {
-        $this->analyze($sample);
-
-        return $this->build();
-    }
 
     private function build()
     {
@@ -51,19 +44,61 @@ class JsonPretty
         }
 
         if ($isArray) {
-            $this->fifo[] = "<span style=\"color:black\">[</span>";
-            $this->lifo[] = "<span style=\"color:black\">]</span>";
+            $this->stackParenthesis($depth - 1);
             foreach ($sample as $value) {
                 $this->analyze($value, $depth + 1);
             }
         } else {
-            $this->fifo[] = str_repeat(' ', 4 * ($depth - 1)) . "<span style=\"color:black\">{</span>";
+            $this->stackBrackets($depth - 1);
             foreach ($sample as $key => $value) {
-                $color = is_string($value) ? 'green' : (is_bool($value) ? 'red' : 'blue');
-                $value = is_string($value) ? "\"$value\"" : (is_bool($value) ? ($value ? 'true' : 'false') : $value);
-                $this->fifo[] = str_repeat(' ', 4 * $depth) . "<span style=\"color:black\">$key</span>: <span style=\"color:$color\">$value</span>";
+                $valueColor = $this->stringColor($value);
+                $value = $this->stringValue($value);
+                $this->stackKeyValue($depth, $key, $value, $valueColor);
             }
-            $this->lifo[] = str_repeat(' ', 4 * ($depth - 1)) . "<span style=\"color:black\">}</span>";
         }
+
+        return $this;
+    }
+
+    private function stringColor($value)
+    {
+        if (is_string($value)) return 'green';
+
+        if (is_bool($value)) return 'red';
+
+        return 'blue'; // numbers
+    }
+
+    private function stringValue($value)
+    {
+        if (is_string($value)) return "\"$value\"";
+
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+
+        return $value;
+    }
+
+    private function indent($depth)
+    {
+        return str_repeat(' ', 4 * $depth);
+    }
+
+    private function stackBrackets($depth)
+    {
+        $this->fifo[] = $this->indent($depth) . "<span style=\"color:black\">{</span>";
+        $this->lifo[] = $this->indent($depth) . "<span style=\"color:black\">}</span>";
+    }
+
+    private function stackParenthesis($depth)
+    {
+        $this->fifo[] = $this->indent($depth) . "<span style=\"color:black\">[</span>";
+        $this->lifo[] = $this->indent($depth) . "<span style=\"color:black\">]</span>";
+    }
+
+    private function stackKeyValue($depth, $key, $value, $valueColor)
+    {
+        $this->fifo[] = $this->indent($depth) . "<span style=\"color:black\">$key</span>: <span style=\"color:$valueColor\">$value</span>";
     }
 }
