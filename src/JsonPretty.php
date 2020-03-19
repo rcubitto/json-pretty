@@ -2,6 +2,14 @@
 
 namespace Rcubitto\JsonPretty;
 
+function dd()
+{
+    array_map(function($x) {
+        var_dump($x);
+    }, func_get_args());
+    die;
+}
+
 class JsonPretty
 {
     protected $fifo = []; // up
@@ -16,7 +24,22 @@ class JsonPretty
 
     private function process($sample)
     {
-        // check if starting sample it is an array or an object
+        $this->analyze($sample);
+
+        return $this->build();
+    }
+
+    private function build()
+    {
+        return "<pre>" .
+            implode(PHP_EOL, $this->fifo) .
+            PHP_EOL .
+            implode(PHP_EOL, array_reverse($this->lifo))
+        . "</pre>";
+    }
+
+    private function analyze($sample, $depth = 1)
+    {
         $keys = array_keys($sample);
 
         $isArray = false;
@@ -30,29 +53,17 @@ class JsonPretty
         if ($isArray) {
             $this->fifo[] = "<span style=\"color:black\">[</span>";
             $this->lifo[] = "<span style=\"color:black\">]</span>";
-        } else {
-            $this->fifo[] = "<span style=\"color:black\">{</span>";
-            foreach ($sample as $key => $value) {
-                $color = is_string($value) ? 'green' : 'blue';
-                $value = is_string($value) ? "\"$value\"" : $value;
-                $this->fifo[] = str_repeat(' ', 4) . "<span style=\"color:black\">$key</span>: <span style=\"color:$color\">$value</span>";
+            foreach ($sample as $value) {
+                $this->analyze($value, $depth + 1);
             }
-            $this->lifo[] = "<span style=\"color:black\">}</span>";
+        } else {
+            $this->fifo[] = str_repeat(' ', 4 * ($depth - 1)) . "<span style=\"color:black\">{</span>";
+            foreach ($sample as $key => $value) {
+                $color = is_string($value) ? 'green' : (is_bool($value) ? 'red' : 'blue');
+                $value = is_string($value) ? "\"$value\"" : (is_bool($value) ? ($value ? 'true' : 'false') : $value);
+                $this->fifo[] = str_repeat(' ', 4 * $depth) . "<span style=\"color:black\">$key</span>: <span style=\"color:$color\">$value</span>";
+            }
+            $this->lifo[] = str_repeat(' ', 4 * ($depth - 1)) . "<span style=\"color:black\">}</span>";
         }
-
-        // keep on going!
-
-
-
-        return $this->build();
-    }
-
-    private function build()
-    {
-        return "<pre>" .
-            implode(PHP_EOL, $this->fifo) .
-            PHP_EOL .
-            implode(PHP_EOL, array_reverse($this->lifo))
-        . "</pre>";
     }
 }

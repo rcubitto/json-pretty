@@ -31,6 +31,34 @@ class JsonPrettyTest extends TestCase
     }
 
     /** @test */
+    function format_object_with_one_key_and_true_value()
+    {
+        $sample = ['a' => true];
+
+        $output = '<pre>';
+        $output .= '<span style="color:black">{</span>' . PHP_EOL;
+        $output .= '    <span style="color:black">a</span>: <span style="color:red">true</span>' . PHP_EOL;
+        $output .= '<span style="color:black">}</span>';
+        $output .= '</pre>';
+
+        $this->assertEquals($output, JsonPretty::format($sample));
+    }
+
+    /** @test */
+    function format_object_with_one_key_and_false_value()
+    {
+        $sample = ['a' => false];
+
+        $output = '<pre>';
+        $output .= '<span style="color:black">{</span>' . PHP_EOL;
+        $output .= '    <span style="color:black">a</span>: <span style="color:red">false</span>' . PHP_EOL;
+        $output .= '<span style="color:black">}</span>';
+        $output .= '</pre>';
+
+        $this->assertEquals($output, JsonPretty::format($sample));
+    }
+
+    /** @test */
     function format_object_with_many_keys_and_numbers()
     {
         $sample = ['a' => 1, 'b' => 2];
@@ -69,6 +97,24 @@ class JsonPrettyTest extends TestCase
         $output .= '    <span style="color:black">a</span>: <span style="color:green">"foo"</span>' . PHP_EOL;
         $output .= '    <span style="color:black">b</span>: <span style="color:blue">2</span>' . PHP_EOL;
         $output .= '<span style="color:black">}</span>';
+        $output .= '</pre>';
+
+        $this->assertEquals($output, JsonPretty::format($sample));
+    }
+
+    /** @test */
+    function format_array_that_contains_a_object_with_one_key_value()
+    {
+        $sample = [
+            ['a' => 1]
+        ];
+
+        $output = '<pre>';
+        $output .= '<span style="color:black">[</span>' . PHP_EOL;
+        $output .= '    <span style="color:black">{</span>' . PHP_EOL;
+        $output .= '        <span style="color:black">a</span>: <span style="color:blue">1</span>' . PHP_EOL;
+        $output .= '    <span style="color:black">}</span>' . PHP_EOL;
+        $output .= '<span style="color:black">]</span>';
         $output .= '</pre>';
 
         $this->assertEquals($output, JsonPretty::format($sample));
