@@ -11,7 +11,10 @@ class JsonPrettyTest extends TestCase
     function format_empty_array()
     {
         $sample = [];
-        $output = '<pre><span style="color:black">{</span>'.PHP_EOL.'<span style="color:black">}</span></pre>';
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+<span style="color:black">}</span></pre>
+EOL;
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
@@ -21,11 +24,11 @@ class JsonPrettyTest extends TestCase
     {
         $sample = ['a' => 1];
 
-        $output = '<pre>';
-        $output .= '<span style="color:black">{</span>' . PHP_EOL;
-        $output .= '    <span style="color:black">a</span>: <span style="color:blue">1</span>' . PHP_EOL;
-        $output .= '<span style="color:black">}</span>';
-        $output .= '</pre>';
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">a</span>: <span style="color:blue">1</span>
+<span style="color:black">}</span></pre>
+EOL;
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
@@ -35,11 +38,11 @@ class JsonPrettyTest extends TestCase
     {
         $sample = ['a' => true];
 
-        $output = '<pre>';
-        $output .= '<span style="color:black">{</span>' . PHP_EOL;
-        $output .= '    <span style="color:black">a</span>: <span style="color:red">true</span>' . PHP_EOL;
-        $output .= '<span style="color:black">}</span>';
-        $output .= '</pre>';
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">a</span>: <span style="color:red">true</span>
+<span style="color:black">}</span></pre>
+EOL;
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
@@ -49,11 +52,11 @@ class JsonPrettyTest extends TestCase
     {
         $sample = ['a' => false];
 
-        $output = '<pre>';
-        $output .= '<span style="color:black">{</span>' . PHP_EOL;
-        $output .= '    <span style="color:black">a</span>: <span style="color:red">false</span>' . PHP_EOL;
-        $output .= '<span style="color:black">}</span>';
-        $output .= '</pre>';
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">a</span>: <span style="color:red">false</span>
+<span style="color:black">}</span></pre>
+EOL;
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
@@ -63,12 +66,12 @@ class JsonPrettyTest extends TestCase
     {
         $sample = ['a' => 1, 'b' => 2];
 
-        $output = '<pre>';
-        $output .= '<span style="color:black">{</span>' . PHP_EOL;
-        $output .= '    <span style="color:black">a</span>: <span style="color:blue">1</span>' . PHP_EOL;
-        $output .= '    <span style="color:black">b</span>: <span style="color:blue">2</span>' . PHP_EOL;
-        $output .= '<span style="color:black">}</span>';
-        $output .= '</pre>';
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">a</span>: <span style="color:blue">1</span>
+    <span style="color:black">b</span>: <span style="color:blue">2</span>
+<span style="color:black">}</span></pre>
+EOL;
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
@@ -78,11 +81,11 @@ class JsonPrettyTest extends TestCase
     {
         $sample = ['a' => 'foo'];
 
-        $output = '<pre>';
-        $output .= '<span style="color:black">{</span>' . PHP_EOL;
-        $output .= '    <span style="color:black">a</span>: <span style="color:green">"foo"</span>' . PHP_EOL;
-        $output .= '<span style="color:black">}</span>';
-        $output .= '</pre>';
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">a</span>: <span style="color:green">"foo"</span>
+<span style="color:black">}</span></pre>
+EOL;
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
@@ -92,12 +95,12 @@ class JsonPrettyTest extends TestCase
     {
         $sample = ['a' => 'foo', 'b' => 2];
 
-        $output = '<pre>';
-        $output .= '<span style="color:black">{</span>' . PHP_EOL;
-        $output .= '    <span style="color:black">a</span>: <span style="color:green">"foo"</span>' . PHP_EOL;
-        $output .= '    <span style="color:black">b</span>: <span style="color:blue">2</span>' . PHP_EOL;
-        $output .= '<span style="color:black">}</span>';
-        $output .= '</pre>';
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">a</span>: <span style="color:green">"foo"</span>
+    <span style="color:black">b</span>: <span style="color:blue">2</span>
+<span style="color:black">}</span></pre>
+EOL;
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
@@ -109,13 +112,13 @@ class JsonPrettyTest extends TestCase
             ['a' => 1]
         ];
 
-        $output = '<pre>';
-        $output .= '<span style="color:black">[</span>' . PHP_EOL;
-        $output .= '    <span style="color:black">{</span>' . PHP_EOL;
-        $output .= '        <span style="color:black">a</span>: <span style="color:blue">1</span>' . PHP_EOL;
-        $output .= '    <span style="color:black">}</span>' . PHP_EOL;
-        $output .= '<span style="color:black">]</span>';
-        $output .= '</pre>';
+        $output = <<<EOL
+<pre><span style="color:black">[</span>
+    <span style="color:black">{</span>
+        <span style="color:black">a</span>: <span style="color:blue">1</span>
+    <span style="color:black">}</span>
+<span style="color:black">]</span></pre>
+EOL;
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
