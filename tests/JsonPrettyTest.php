@@ -58,4 +58,19 @@ class JsonPrettyTest extends TestCase
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
+
+    /** @test */
+    function format_object_with_mixed_values_string_and_number()
+    {
+        $sample = ['a' => 'foo', 'b' => 2];
+
+        $output = '<pre>';
+        $output .= '<span style="color:black">{</span>' . PHP_EOL;
+        $output .= '    <span style="color:black">a</span>: <span style="color:green">"foo"</span>' . PHP_EOL;
+        $output .= '    <span style="color:black">b</span>: <span style="color:blue">2</span>' . PHP_EOL;
+        $output .= '<span style="color:black">}</span>';
+        $output .= '</pre>';
+
+        $this->assertEquals($output, JsonPretty::format($sample));
+    }
 }
