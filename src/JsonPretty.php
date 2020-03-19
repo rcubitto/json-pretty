@@ -33,15 +33,7 @@ class JsonPretty
 
     private function analyze($sample, $depth = 1)
     {
-        $keys = array_keys($sample);
-
-        $isArray = false;
-        foreach ($keys as $key) {
-            if (is_integer($key)) {
-                $isArray = true;
-                break;
-            }
-        }
+        $isArray = $this->isArray($sample);
 
         if ($isArray) {
             $this->stackParenthesis($depth - 1);
@@ -100,5 +92,16 @@ class JsonPretty
     private function stackKeyValue($depth, $key, $value, $valueColor)
     {
         $this->fifo[] = $this->indent($depth) . "<span style=\"color:black\">$key</span>: <span style=\"color:$valueColor\">$value</span>";
+    }
+
+    private function isArray($sample)
+    {
+        foreach (array_keys($sample) as $key) {
+            if (is_integer($key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
