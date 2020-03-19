@@ -1,0 +1,42 @@
+{
+    "name": "rcubitto/json-pretty",
+    "description": "Pretty print your PHP arrays with style – in full color and with proper indentation",
+    "keywords": [
+        "rcubitto",
+        "json-pretty"
+    ],
+    "homepage": "https://github.com/rcubitto/json-pretty",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Raúl Cubitto",
+            "email": "rcubitto@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rcubitto\\JsonPretty\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rcubitto\\JsonPretty\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
