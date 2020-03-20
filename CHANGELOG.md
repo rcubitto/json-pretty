@@ -1,7 +1,5 @@
 # Changelog
 
-All notable changes to `json-pretty` will be documented in this file
-
-## 1.0.0 - 201X-XX-XX
+## 0.1 - 2020-03-20
 
 - initial release
