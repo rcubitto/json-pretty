@@ -13,6 +13,7 @@ function dd()
 class JsonPretty
 {
     protected $cursor = 0;
+    protected $indent = 0;
     protected $stack = [];
 
     public static function format($sample)
@@ -27,19 +28,23 @@ class JsonPretty
         return "<pre>" . implode(PHP_EOL, $this->stack) . "</pre>";
     }
 
-    private function analyze($sample, $depth = 1)
+    private function analyze($sample)
     {
-        if ($this->isArray($sample)) {
-            $this->stackParenthesis($depth - 1);
+        if ($this->isJsonArray($sample)) {
+            $this->stackParenthesis();
             foreach ($sample as $value) {
-                $this->analyze($value, $depth + 1);
+                $this->analyze($value);
             }
+        } elseif (is_string($sample)) {
+            $valueColor = $this->stringColor($sample);
+            $value = $this->stringValue($sample);
+            $this->stackString($value, $valueColor);
         } else {
-            $this->stackBrackets($depth - 1);
+            $this->stackBrackets();
             foreach ($sample as $key => $value) {
                 $valueColor = $this->stringColor($value);
                 $value = $this->stringValue($value);
-                $this->stackKeyValue($depth, $key, $value, $valueColor);
+                $this->stackKeyValue($key, $value, $valueColor);
             }
         }
 
@@ -66,30 +71,39 @@ class JsonPretty
         return $value;
     }
 
-    private function indent($depth)
+    private function indent()
     {
-        return str_repeat(' ', 4 * $depth);
+        return str_repeat(' ', 4 * $this->indent);
     }
 
-    private function stackBrackets($depth)
+    private function stackBrackets()
     {
-        $this->stack($this->indent($depth) . "<span style=\"color:black\">}</span>");
-        $this->stack($this->indent($depth) . "<span style=\"color:black\">{</span>");
+        $this->stack($this->indent() . "<span style=\"color:black\">}</span>");
+        $this->stack($this->indent() . "<span style=\"color:black\">{</span>");
+
+        $this->cursor++;
+        $this->indent++;
+    }
+
+    private function stackParenthesis()
+    {
+        $this->stack($this->indent() . "<span style=\"color:black\">]</span>");
+        $this->stack($this->indent() . "<span style=\"color:black\">[</span>");
+
+        $this->cursor++;
+        $this->indent++;
+    }
+
+    private function stackKeyValue($key, $value, $valueColor)
+    {
+        $this->stack($this->indent() . "<span style=\"color:black\">$key</span>: <span style=\"color:$valueColor\">$value</span>");
 
         $this->cursor++;
     }
 
-    private function stackParenthesis($depth)
+    private function stackString($value, $valueColor)
     {
-        $this->stack($this->indent($depth) . "<span style=\"color:black\">]</span>");
-        $this->stack($this->indent($depth) . "<span style=\"color:black\">[</span>");
-
-        $this->cursor++;
-    }
-
-    private function stackKeyValue($depth, $key, $value, $valueColor)
-    {
-        $this->stack($this->indent($depth) . "<span style=\"color:black\">$key</span>: <span style=\"color:$valueColor\">$value</span>");
+        $this->stack($this->indent() . "<span style=\"color:$valueColor\">$value</span>");
 
         $this->cursor++;
     }
@@ -99,8 +113,12 @@ class JsonPretty
         array_splice($this->stack, $this->cursor, 0, $string);
     }
 
-    private function isArray($sample)
+    private function isJsonArray($sample)
     {
+        if (is_string($sample)) {
+            return false;
+        }
+
         foreach (array_keys($sample) as $key) {
             if (is_integer($key)) {
                 return true;

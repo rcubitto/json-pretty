@@ -123,17 +123,19 @@ EOL;
         $this->assertEquals($output, JsonPretty::format($sample));
     }
 
-//    /** @test */
-//    function format_array_with_strings()
-//    {
-//        $sample = ['a', 'b', 'c'];
-//
-//        $output = <<<EOL
-//<pre><span style="color:black">[</span>
-//    <span style="color:green">"a"</span>
-//    <span style="color:green">"b"</span>
-//    <span style="color:green">"c"</span>
-//<span style="color:black">]</span></pre>
-//EOL;
-//    }
+    /** @test */
+    function format_array_with_strings()
+    {
+        $sample = ['a', 'b', 'c'];
+
+        $output = <<<EOL
+<pre><span style="color:black">[</span>
+    <span style="color:green">"a"</span>
+    <span style="color:green">"b"</span>
+    <span style="color:green">"c"</span>
+<span style="color:black">]</span></pre>
+EOL;
+
+        $this->assertEquals($output, JsonPretty::format($sample));
+    }
 }
