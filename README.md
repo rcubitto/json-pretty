@@ -1,11 +1,11 @@
-# Very short description of the package
+# JSON Pretty Print
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/rcubitto/json-pretty.svg?style=flat-square)](https://packagist.org/packages/rcubitto/json-pretty)
 [![Build Status](https://img.shields.io/travis/rcubitto/json-pretty/master.svg?style=flat-square)](https://travis-ci.org/rcubitto/json-pretty)
 [![Quality Score](https://img.shields.io/scrutinizer/g/rcubitto/json-pretty.svg?style=flat-square)](https://scrutinizer-ci.com/g/rcubitto/json-pretty)
 [![Total Downloads](https://img.shields.io/packagist/dt/rcubitto/json-pretty.svg?style=flat-square)](https://packagist.org/packages/rcubitto/json-pretty)
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+JSON Pretty is a very simple library that prints a JSON array in full color with proper indentation.
 
 ## Installation
 
@@ -17,9 +17,51 @@ composer require rcubitto/json-pretty
 
 ## Usage
 
+You can print any array, both sequencial and associate.
+
 ``` php
-// Usage description here
+\Rcubitto\JsonPretty\JsonPretty::print([
+    'store' => 'Best Buy',
+    'number' => 30305,
+    'products' => [
+        [
+            'name' => 'TV',
+            'cost' => 2000.00,
+            'in_stock' => true
+        ],
+        [
+            'name' => 'Phone',
+            'cost' => 350.80,
+            'in_stock' => false
+        ],
+        [
+            'name' => 'Sample',
+            'cost' => 0,
+            'in_stock' => null
+        ]
+    ]
+]);
+
 ```
+
+The previous snippet will print the following:
+
+![Print output](https://raw.githubusercontent.com/rcubitto/json-pretty/master/print-example-one.png?token=AARLMXW34PBRSGY4GRCWHGS6PWVZ2)
+
+You can also print an object class:
+
+```php
+$obj = new \Stdclass;
+$obj->prop = 1;
+$obj->another = 2;
+
+\Rcubitto\JsonPretty\JsonPretty::print($obj);
+```
+
+Output:
+
+![Print output](https://raw.githubusercontent.com/rcubitto/json-pretty/master/print-example-two.png?token=AARLMXXFQXV6NZ3DO5XC2UC6PWWOA)
+
 
 ### Testing
 
