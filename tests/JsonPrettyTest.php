@@ -268,7 +268,44 @@ EOL;
 <span style="color:black">}</span></pre>
 EOL;
 
+        $this->assertEquals($output, JsonPretty::print($sample));
+    }
 
+    /** @test */
+    function format_array_with_string_that_contains_commas()
+    {
+        $sample = ["khgkh, mitch, Delaware 234234"];
+
+        $output = <<<EOL
+<pre><span style="color:black">[</span>
+    <span style="color:green">"khgkh, mitch, Delaware 234234"</span>
+<span style="color:black">]</span></pre>
+EOL;
+        $this->assertEquals($output, JsonPretty::print($sample));
+    }
+
+    /** @test */
+    function format_object_that_contains_array_of_objects_that_contain_a_string_property_with_commas()
+    {
+        $sample = [
+            'tokens' => [
+                [
+                    'name' => 'a',
+                    'value' => 'string, with, commas'
+                ]
+            ]
+        ];
+
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">tokens</span>: <span style="color:black">[</span>
+        <span style="color:black">{</span>
+            <span style="color:black">name</span>: <span style="color:green">"a"</span>,
+            <span style="color:black">value</span>: <span style="color:green">"string, with, commas"</span>
+        <span style="color:black">}</span>
+    <span style="color:black">]</span>
+<span style="color:black">}</span></pre>
+EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 }

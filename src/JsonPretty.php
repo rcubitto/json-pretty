@@ -66,10 +66,19 @@ class JsonPretty
             }
 
             // key / value
-            preg_match('/"(.+)":\s([^,]*)(,)?/', ltrim($line, ' '), $matches);
+            preg_match('/^"(.+)":\s(.+)$/', ltrim($line, ' '), $matches);
             $key = $matches[1];
-            $value = $matches[2];
-            $comma = $matches[3] ?? '';
+
+            if (strlen($matches[2]) > 1) {
+                list($value, $comma) = str_split($matches[2], strlen($matches[2]) - 1);
+                if ($comma !== ',') {
+                    $value = $matches[2];
+                    $comma = '';
+                }
+            } else {
+                $value = $matches[2];
+                $comma = '';
+            }
 
             $line = str_replace("\"$key\"", "<span style=\"color:black\">$key</span>", rtrim($line, ',')); // key
             $valueColor = $this->color($value); // color
