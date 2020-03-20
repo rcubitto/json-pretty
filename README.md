@@ -44,7 +44,7 @@ You can print any array, both sequencial and associate.
 
 ```
 
-The previous snippet will print the following:
+The previous snippet will return the following string:
 
 ![Print output](https://raw.githubusercontent.com/rcubitto/json-pretty/master/print-example-one.png?token=AARLMXW34PBRSGY4GRCWHGS6PWVZ2)
 
@@ -61,6 +61,8 @@ $obj->another = 2;
 Output:
 
 ![Print output](https://raw.githubusercontent.com/rcubitto/json-pretty/master/print-example-two.png?token=AARLMXXFQXV6NZ3DO5XC2UC6PWWOA)
+
+**NOTE**: the string is not echoed out, just returned. So if you want to actually echo it out, don't forget to do so.
 
 
 ### Testing
@@ -79,7 +81,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ### Security
 
-If you discover any security related issues, please email rcubitto@gmail.com instead of using the issue tracker.
+If you discover any security related issues, please use the issue tracker.
 
 ## Credits
 
