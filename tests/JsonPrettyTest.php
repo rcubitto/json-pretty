@@ -12,11 +12,11 @@ class JsonPrettyTest extends TestCase
     {
         $sample = [];
         $output = <<<EOL
-<pre><span style="color:black">{</span>
-<span style="color:black">}</span></pre>
+<pre><span style="color:black">[</span>
+<span style="color:black">]</span></pre>
 EOL;
 
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -30,7 +30,7 @@ EOL;
 <span style="color:black">}</span></pre>
 EOL;
 
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -44,7 +44,7 @@ EOL;
 <span style="color:black">}</span></pre>
 EOL;
 
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -58,7 +58,7 @@ EOL;
 <span style="color:black">}</span></pre>
 EOL;
 
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -68,12 +68,12 @@ EOL;
 
         $output = <<<EOL
 <pre><span style="color:black">{</span>
-    <span style="color:black">a</span>: <span style="color:blue">1</span>
+    <span style="color:black">a</span>: <span style="color:blue">1</span>,
     <span style="color:black">b</span>: <span style="color:blue">2</span>
 <span style="color:black">}</span></pre>
 EOL;
 
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -87,7 +87,7 @@ EOL;
 <span style="color:black">}</span></pre>
 EOL;
 
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -97,12 +97,12 @@ EOL;
 
         $output = <<<EOL
 <pre><span style="color:black">{</span>
-    <span style="color:black">a</span>: <span style="color:green">"foo"</span>
+    <span style="color:black">a</span>: <span style="color:green">"foo"</span>,
     <span style="color:black">b</span>: <span style="color:blue">2</span>
 <span style="color:black">}</span></pre>
 EOL;
 
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -120,7 +120,7 @@ EOL;
 <span style="color:black">]</span></pre>
 EOL;
 
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -130,13 +130,13 @@ EOL;
 
         $output = <<<EOL
 <pre><span style="color:black">[</span>
-    <span style="color:green">"a"</span>
-    <span style="color:green">"b"</span>
+    <span style="color:green">"a"</span>,
+    <span style="color:green">"b"</span>,
     <span style="color:green">"c"</span>
 <span style="color:black">]</span></pre>
 EOL;
 
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -146,13 +146,13 @@ EOL;
 
         $output = <<<EOL
 <pre><span style="color:black">[</span>
-    <span style="color:blue">1</span>
-    <span style="color:blue">2</span>
+    <span style="color:blue">1</span>,
+    <span style="color:blue">2</span>,
     <span style="color:blue">3</span>
 <span style="color:black">]</span></pre>
 EOL;
 
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -167,7 +167,7 @@ EOL;
     <span style="color:black">a</span>: <span style="color:rebeccapurple">null</span>
 <span style="color:black">}</span></pre>
 EOL;
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -180,13 +180,13 @@ EOL;
         $output = <<<EOL
 <pre><span style="color:black">{</span>
     <span style="color:black">a</span>: <span style="color:black">[</span>
-        <span style="color:blue">1</span>
-        <span style="color:blue">2</span>
+        <span style="color:blue">1</span>,
+        <span style="color:blue">2</span>,
         <span style="color:blue">3</span>
     <span style="color:black">]</span>
 <span style="color:black">}</span></pre>
 EOL;
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 
     /** @test */
@@ -199,12 +199,60 @@ EOL;
         $output = <<<EOL
 <pre><span style="color:black">{</span>
     <span style="color:black">a</span>: <span style="color:black">[</span>
-        <span style="color:green">"b"</span>
-        <span style="color:green">"c"</span>
+        <span style="color:green">"b"</span>,
+        <span style="color:green">"c"</span>,
         <span style="color:green">"d"</span>
     <span style="color:black">]</span>
 <span style="color:black">}</span></pre>
 EOL;
-        $this->assertEquals($output, JsonPretty::format($sample));
+        $this->assertEquals($output, JsonPretty::print($sample));
+    }
+
+    /** @test */
+    function format_object_with_nested_array_of_objects()
+    {
+        $sample = [
+            'name' => 'Axl Rose',
+            'recipients' => [
+                ['email' => null, 'first_name' => 'Slash', 'default' => false, 'cost' => 30.5],
+                ['email' => 'duff@gnr.com', 'first_name' => 'Duff', 'default' => true, 'cost' => 28.5],
+            ],
+            'tokens' => [
+                ['name' => 'Client.Phone', 'value' => ''],
+                ['name' => 'Client.Title', 'value' => 'Owner']
+            ]
+        ];
+
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">name</span>: <span style="color:green">"Axl Rose"</span>,
+    <span style="color:black">recipients</span>: <span style="color:black">[</span>
+        <span style="color:black">{</span>
+            <span style="color:black">email</span>: <span style="color:rebeccapurple">null</span>,
+            <span style="color:black">first_name</span>: <span style="color:green">"Slash"</span>,
+            <span style="color:black">default</span>: <span style="color:red">false</span>,
+            <span style="color:black">cost</span>: <span style="color:blue">30.5</span>
+        <span style="color:black">}</span>,
+        <span style="color:black">{</span>
+            <span style="color:black">email</span>: <span style="color:green">"duff@gnr.com"</span>,
+            <span style="color:black">first_name</span>: <span style="color:green">"Duff"</span>,
+            <span style="color:black">default</span>: <span style="color:red">true</span>,
+            <span style="color:black">cost</span>: <span style="color:blue">28.5</span>
+        <span style="color:black">}</span>
+    <span style="color:black">]</span>,
+    <span style="color:black">tokens</span>: <span style="color:black">[</span>
+        <span style="color:black">{</span>
+            <span style="color:black">name</span>: <span style="color:green">"Client.Phone"</span>,
+            <span style="color:black">value</span>: <span style="color:green">""</span>
+        <span style="color:black">}</span>,
+        <span style="color:black">{</span>
+            <span style="color:black">name</span>: <span style="color:green">"Client.Title"</span>,
+            <span style="color:black">value</span>: <span style="color:green">"Owner"</span>
+        <span style="color:black">}</span>
+    <span style="color:black">]</span>
+<span style="color:black">}</span></pre>
+EOL;
+
+        $this->assertEquals($output, JsonPretty::print($sample));
     }
 }

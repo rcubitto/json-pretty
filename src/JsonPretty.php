@@ -12,141 +12,89 @@ function dd()
 
 class JsonPretty
 {
-    protected $cursor = 0;
-    protected $indent = 0;
-    protected $stack = [];
+    protected $lines = [];
 
-    public static function format($sample)
+    public static function print($sample)
     {
-        return (new self)->analyze((array) $sample)->build();
+        return (new self)->parse($sample)->toString();
     }
 
-    //
-
-    private function build()
+    private function toString()
     {
-        return "<pre>" . implode(PHP_EOL, $this->stack) . "</pre>";
+        return "<pre>" . implode(PHP_EOL, $this->lines) . "</pre>";
     }
 
-    private function analyze($sample)
+    private function parse($sample)
     {
-        if ($this->isJsonArray($sample)) {
-            $this->stackParenthesis();
-            foreach ($sample as $value) {
-                $this->analyze($value);
-            }
-        } elseif (is_string($sample)) {
-            $valueColor = $this->stringColor($sample);
-            $value = $this->stringValue($sample);
-            $this->stackString($value, $valueColor);
-        } elseif (is_numeric($sample)) {
-            $valueColor = $this->stringColor($sample);
-            $value = $this->stringValue($sample);
-            $this->stackString($value, $valueColor);
-        }
-        else { // it's an object!
-            $this->stackBrackets();
-            foreach ($sample as $key => $value) {
-                $this->stackKeyValue($key, $value);
-            }
-        }
+        $sample = $this->jsonEncode($sample);
 
+        $this->lines = array_map(function ($line) {
+            // opening object
+            if (ltrim($line, ' ') === '{') return str_replace('{', '<span style="color:black">{</span>', $line);
+
+            // closing object
+            preg_match('/^(})(,)*$/', ltrim($line, ' '), $matches);
+            if ($matches) {
+                $value = $matches[1];
+                $comma = $matches[2] ?? null;
+                return str_replace($value, "<span style=\"color:black\">{$value}</span>{$comma}", rtrim($line, ','));
+            }
+
+            // opening array
+            if (ltrim($line, ' ') === '[') return str_replace('[', '<span style="color:black">[</span>', $line);
+
+            // closing array
+            preg_match('/^(])(,)*$/', ltrim($line, ' '), $matches);
+            if ($matches) {
+                $value = $matches[1];
+                $comma = $matches[2] ?? null;
+                return str_replace($value, "<span style=\"color:black\">{$value}</span>{$comma}", rtrim($line, ','));
+            }
+
+            // number
+            preg_match('/^([\d.]*)[,]*$/', ltrim($line, ' '), $matches);
+            if ($matches) {
+                $value = $matches[1];
+                return str_replace("$value", "<span style=\"color:blue\">$value</span>", $line);
+            }
+
+            // string
+            preg_match('/^"([^:]*)"[,]*$/', ltrim($line, ' '), $matches);
+            if ($matches) {
+                $value = $matches[1];
+                return str_replace("\"$value\"", "<span style=\"color:green\">\"$value\"</span>", $line);
+            }
+
+            // key / value
+            preg_match('/"(.+)":\s([^,]*)(,)?/', ltrim($line, ' '), $matches);
+            $key = $matches[1];
+            $value = $matches[2];
+            $comma = $matches[3] ?? '';
+
+            $line = str_replace("\"$key\"", "<span style=\"color:black\">$key</span>", rtrim($line, ',')); // key
+            $valueColor = $this->color($value); // color
+            return str_replace($value, "<span style=\"color:$valueColor\">$value</span>${comma}", $line); // value
+
+        }, explode("\n", $sample));
+        
         return $this;
     }
 
-    private function stringColor($value)
+    private function color($string)
     {
-        if (is_string($value)) return 'green';
+        if ($string === 'true' || $string === 'false') return 'red';
 
-        if (is_bool($value)) return 'red';
+        if ($string === 'null') return 'rebeccapurple';
 
-        if (is_null($value)) return 'rebeccapurple';
+        if (is_numeric($string)) return 'blue';
 
-        if (is_numeric($value)) return 'blue';
+        if (in_array($string, ['{', '}', '[', ']'])) return 'black';
 
-        return 'black'; // {}[]
+        return 'green'; // string
     }
 
-    private function stringValue($value)
+    private function jsonEncode($sample)
     {
-        if (is_string($value)) return "\"$value\"";
-
-        if (is_null($value)) return "null";
-
-        if (is_bool($value)) {
-            return $value ? 'true' : 'false';
-        }
-
-        return $value;
-    }
-
-    private function indent()
-    {
-        return str_repeat(' ', 4 * $this->indent);
-    }
-
-    private function stackBrackets()
-    {
-        $this->stack($this->indent() . "<span style=\"color:black\">}</span>");
-        $this->stack($this->indent() . "<span style=\"color:black\">{</span>");
-
-        $this->cursor++;
-        $this->indent++;
-    }
-
-    private function stackParenthesis()
-    {
-        $this->stack($this->indent() . "<span style=\"color:black\">]</span>");
-        $this->stack($this->indent() . "<span style=\"color:black\">[</span>");
-
-        $this->cursor++;
-        $this->indent++;
-    }
-
-    private function stackKeyValue($key, $value)
-    {
-        if (is_array($value)) {
-            $this->stack($this->indent() . "<span style=\"color:black\">]</span>");
-            $this->stack($this->indent() . "<span style=\"color:black\">$key</span>: <span style=\"color:black\">[</span>");
-            $this->cursor++;
-            $this->indent++;
-            foreach ($value as $val) {
-                $this->stackString($this->stringValue($val), $this->stringColor($val));
-            }
-        } else {
-            $valueColor = $this->stringColor($value);
-            $value = $this->stringValue($value);
-            $this->stack($this->indent() . "<span style=\"color:black\">$key</span>: <span style=\"color:$valueColor\">$value</span>");
-            $this->cursor++;
-        }
-
-
-    }
-
-    private function stackString($value, $valueColor)
-    {
-        $this->stack($this->indent() . "<span style=\"color:$valueColor\">$value</span>");
-
-        $this->cursor++;
-    }
-
-    private function stack($string)
-    {
-        array_splice($this->stack, $this->cursor, 0, $string);
-    }
-
-    private function isJsonArray($sample)
-    {
-        if (is_string($sample) || is_numeric($sample)) {
-            return false;
-        }
-
-        foreach (array_keys($sample) as $key) {
-            if (is_integer($key)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $sample === [] ? "[\n]" : json_encode((array) $sample, JSON_PRETTY_PRINT);
     }
 }
