@@ -255,4 +255,20 @@ EOL;
 
         $this->assertEquals($output, JsonPretty::print($sample));
     }
+
+    /** @test */
+    function format_an_object_class()
+    {
+        $sample = new \Stdclass;
+        $sample->a = 1;
+
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">a</span>: <span style="color:blue">1</span>
+<span style="color:black">}</span></pre>
+EOL;
+
+
+        $this->assertEquals($output, JsonPretty::print($sample));
+    }
 }

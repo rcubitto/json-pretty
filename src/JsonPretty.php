@@ -76,7 +76,7 @@ class JsonPretty
             return str_replace($value, "<span style=\"color:$valueColor\">$value</span>${comma}", $line); // value
 
         }, explode("\n", $sample));
-        
+
         return $this;
     }
 
