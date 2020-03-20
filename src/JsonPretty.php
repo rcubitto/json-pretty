@@ -12,8 +12,8 @@ function dd()
 
 class JsonPretty
 {
-    protected $fifo = []; // up
-    protected $lifo = []; // down
+    protected $cursor = 0;
+    protected $stack = [];
 
     public static function format($sample)
     {
@@ -24,18 +24,12 @@ class JsonPretty
 
     private function build()
     {
-        return "<pre>" .
-            implode(PHP_EOL, $this->fifo) .
-            PHP_EOL .
-            implode(PHP_EOL, array_reverse($this->lifo))
-        . "</pre>";
+        return "<pre>" . implode(PHP_EOL, $this->stack) . "</pre>";
     }
 
     private function analyze($sample, $depth = 1)
     {
-        $isArray = $this->isArray($sample);
-
-        if ($isArray) {
+        if ($this->isArray($sample)) {
             $this->stackParenthesis($depth - 1);
             foreach ($sample as $value) {
                 $this->analyze($value, $depth + 1);
@@ -79,19 +73,30 @@ class JsonPretty
 
     private function stackBrackets($depth)
     {
-        $this->fifo[] = $this->indent($depth) . "<span style=\"color:black\">{</span>";
-        $this->lifo[] = $this->indent($depth) . "<span style=\"color:black\">}</span>";
+        $this->stack($this->indent($depth) . "<span style=\"color:black\">}</span>");
+        $this->stack($this->indent($depth) . "<span style=\"color:black\">{</span>");
+
+        $this->cursor++;
     }
 
     private function stackParenthesis($depth)
     {
-        $this->fifo[] = $this->indent($depth) . "<span style=\"color:black\">[</span>";
-        $this->lifo[] = $this->indent($depth) . "<span style=\"color:black\">]</span>";
+        $this->stack($this->indent($depth) . "<span style=\"color:black\">]</span>");
+        $this->stack($this->indent($depth) . "<span style=\"color:black\">[</span>");
+
+        $this->cursor++;
     }
 
     private function stackKeyValue($depth, $key, $value, $valueColor)
     {
-        $this->fifo[] = $this->indent($depth) . "<span style=\"color:black\">$key</span>: <span style=\"color:$valueColor\">$value</span>";
+        $this->stack($this->indent($depth) . "<span style=\"color:black\">$key</span>: <span style=\"color:$valueColor\">$value</span>");
+
+        $this->cursor++;
+    }
+
+    private function stack($string)
+    {
+        array_splice($this->stack, $this->cursor, 0, $string);
     }
 
     private function isArray($sample)

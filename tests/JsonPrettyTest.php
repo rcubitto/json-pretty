@@ -106,7 +106,7 @@ EOL;
     }
 
     /** @test */
-    function format_array_that_contains_a_object_with_one_key_value()
+    function format_array_that_contains_an_object_with_one_key_value()
     {
         $sample = [
             ['a' => 1]
@@ -122,4 +122,18 @@ EOL;
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
+
+//    /** @test */
+//    function format_array_with_strings()
+//    {
+//        $sample = ['a', 'b', 'c'];
+//
+//        $output = <<<EOL
+//<pre><span style="color:black">[</span>
+//    <span style="color:green">"a"</span>
+//    <span style="color:green">"b"</span>
+//    <span style="color:green">"c"</span>
+//<span style="color:black">]</span></pre>
+//EOL;
+//    }
 }
