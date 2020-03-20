@@ -39,12 +39,15 @@ class JsonPretty
             $valueColor = $this->stringColor($sample);
             $value = $this->stringValue($sample);
             $this->stackString($value, $valueColor);
-        } else {
+        } elseif (is_numeric($sample)) {
+            $valueColor = $this->stringColor($sample);
+            $value = $this->stringValue($sample);
+            $this->stackString($value, $valueColor);
+        }
+        else { // it's an object!
             $this->stackBrackets();
             foreach ($sample as $key => $value) {
-                $valueColor = $this->stringColor($value);
-                $value = $this->stringValue($value);
-                $this->stackKeyValue($key, $value, $valueColor);
+                $this->stackKeyValue($key, $value);
             }
         }
 
@@ -57,12 +60,18 @@ class JsonPretty
 
         if (is_bool($value)) return 'red';
 
-        return 'blue'; // numbers
+        if (is_null($value)) return 'rebeccapurple';
+
+        if (is_numeric($value)) return 'blue';
+
+        return 'black'; // {}[]
     }
 
     private function stringValue($value)
     {
         if (is_string($value)) return "\"$value\"";
+
+        if (is_null($value)) return "null";
 
         if (is_bool($value)) {
             return $value ? 'true' : 'false';
@@ -94,11 +103,24 @@ class JsonPretty
         $this->indent++;
     }
 
-    private function stackKeyValue($key, $value, $valueColor)
+    private function stackKeyValue($key, $value)
     {
-        $this->stack($this->indent() . "<span style=\"color:black\">$key</span>: <span style=\"color:$valueColor\">$value</span>");
+        if (is_array($value)) {
+            $this->stack($this->indent() . "<span style=\"color:black\">]</span>");
+            $this->stack($this->indent() . "<span style=\"color:black\">$key</span>: <span style=\"color:black\">[</span>");
+            $this->cursor++;
+            $this->indent++;
+            foreach ($value as $val) {
+                $this->stackString($this->stringValue($val), $this->stringColor($val));
+            }
+        } else {
+            $valueColor = $this->stringColor($value);
+            $value = $this->stringValue($value);
+            $this->stack($this->indent() . "<span style=\"color:black\">$key</span>: <span style=\"color:$valueColor\">$value</span>");
+            $this->cursor++;
+        }
 
-        $this->cursor++;
+
     }
 
     private function stackString($value, $valueColor)
@@ -115,7 +137,7 @@ class JsonPretty
 
     private function isJsonArray($sample)
     {
-        if (is_string($sample)) {
+        if (is_string($sample) || is_numeric($sample)) {
             return false;
         }
 

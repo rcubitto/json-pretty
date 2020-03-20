@@ -138,4 +138,73 @@ EOL;
 
         $this->assertEquals($output, JsonPretty::format($sample));
     }
+
+    /** @test */
+    function format_array_of_numbers()
+    {
+        $sample = [1, 2, 3];
+
+        $output = <<<EOL
+<pre><span style="color:black">[</span>
+    <span style="color:blue">1</span>
+    <span style="color:blue">2</span>
+    <span style="color:blue">3</span>
+<span style="color:black">]</span></pre>
+EOL;
+
+        $this->assertEquals($output, JsonPretty::format($sample));
+    }
+
+    /** @test */
+    function format_array_with_key_and_null_as_value()
+    {
+        $sample = [
+            'a' => null
+        ];
+
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">a</span>: <span style="color:rebeccapurple">null</span>
+<span style="color:black">}</span></pre>
+EOL;
+        $this->assertEquals($output, JsonPretty::format($sample));
+    }
+
+    /** @test */
+    function format_nested_array_with_numbers()
+    {
+        $sample = [
+            'a' => [1,2,3]
+        ];
+
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">a</span>: <span style="color:black">[</span>
+        <span style="color:blue">1</span>
+        <span style="color:blue">2</span>
+        <span style="color:blue">3</span>
+    <span style="color:black">]</span>
+<span style="color:black">}</span></pre>
+EOL;
+        $this->assertEquals($output, JsonPretty::format($sample));
+    }
+
+    /** @test */
+    function format_nested_array_with_strings()
+    {
+        $sample = [
+            'a' => ['b','c','d']
+        ];
+
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">a</span>: <span style="color:black">[</span>
+        <span style="color:green">"b"</span>
+        <span style="color:green">"c"</span>
+        <span style="color:green">"d"</span>
+    <span style="color:black">]</span>
+<span style="color:black">}</span></pre>
+EOL;
+        $this->assertEquals($output, JsonPretty::format($sample));
+    }
 }
