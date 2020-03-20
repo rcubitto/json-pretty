@@ -308,4 +308,42 @@ EOL;
 EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
+
+    /** @test */
+    function format_array_of_booleans()
+    {
+        $sample = [
+            true,
+            false,
+            true
+        ];
+
+        $output = <<<EOL
+<pre><span style="color:black">[</span>
+    <span style="color:red">true</span>,
+    <span style="color:red">false</span>,
+    <span style="color:red">true</span>
+<span style="color:black">]</span></pre>
+EOL;
+        $this->assertEquals($output, JsonPretty::print($sample));
+    }
+
+    /** @test */
+    function format_mixed_array()
+    {
+        $sample = [
+            1,
+            true,
+            "hey"
+        ];
+
+        $output = <<<EOL
+<pre><span style="color:black">[</span>
+    <span style="color:blue">1</span>,
+    <span style="color:red">true</span>,
+    <span style="color:green">"hey"</span>
+<span style="color:black">]</span></pre>
+EOL;
+        $this->assertEquals($output, JsonPretty::print($sample));
+    }
 }

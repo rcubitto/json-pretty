@@ -65,6 +65,13 @@ class JsonPretty
                 return str_replace("\"$value\"", "<span style=\"color:green\">\"$value\"</span>", $line);
             }
 
+            // boolean
+            preg_match('/^(true|false)(?:,)?$/', ltrim($line, ' '), $matches);
+            if ($matches) {
+                $value = $matches[1];
+                return str_replace($value, "<span style=\"color:red\">$value</span>", $line);
+            }
+
             // key / value
             preg_match('/^"(.+)":\s(.+)$/', ltrim($line, ' '), $matches);
             $key = $matches[1];
