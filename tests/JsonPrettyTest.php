@@ -346,4 +346,22 @@ EOL;
 EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
+
+    /** @test */
+    function format_array_of_empty_arrays()
+    {
+        $sample = [[],[],[]];
+
+        $output = <<<EOL
+<pre><span style="color:black">[</span>
+    <span style="color:black">[</span>
+    <span style="color:black">]</span>,
+    <span style="color:black">[</span>
+    <span style="color:black">]</span>,
+    <span style="color:black">[</span>
+    <span style="color:black">]</span>
+<span style="color:black">]</span></pre>
+EOL;
+        $this->assertEquals($output, JsonPretty::print($sample));
+    }
 }

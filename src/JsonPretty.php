@@ -26,50 +26,69 @@ class JsonPretty
 
     private function parse($sample)
     {
-        $sample = $this->jsonEncode($sample);
+        $sample = $this->jsonEncodeAsArray($sample);
 
-        $this->lines = array_map(function ($line) {
+        foreach ($sample as $line) {
+            // empty array
+            preg_match('/^(\s*)\[](,?)$/', $line, $matches);
+            if ($matches) {
+                $this->lines[] = ($matches[1] ?? ''). '<span style="color:black">[</span>';
+                $this->lines[] = ($matches[1] ?? ''). '<span style="color:black">]</span>' . ($matches[2] ?? '');
+                continue;
+            }
+
             // opening object
-            if (ltrim($line, ' ') === '{') return str_replace('{', '<span style="color:black">{</span>', $line);
+            if (ltrim($line, ' ') === '{') {
+                $this->lines[] = str_replace('{', '<span style="color:black">{</span>', $line);
+                continue;
+            }
 
             // closing object
             preg_match('/^(})(,)*$/', ltrim($line, ' '), $matches);
             if ($matches) {
                 $value = $matches[1];
                 $comma = $matches[2] ?? null;
-                return str_replace($value, "<span style=\"color:black\">{$value}</span>{$comma}", rtrim($line, ','));
+                $this->lines[] = str_replace($value, "<span style=\"color:black\">{$value}</span>{$comma}", rtrim($line, ','));
+                continue;
             }
 
             // opening array
-            if (ltrim($line, ' ') === '[') return str_replace('[', '<span style="color:black">[</span>', $line);
+            if (ltrim($line, ' ') === '[') {
+                $this->lines[] = str_replace('[', '<span style="color:black">[</span>', $line);
+                continue;
+            }
 
             // closing array
             preg_match('/^(])(,)*$/', ltrim($line, ' '), $matches);
             if ($matches) {
                 $value = $matches[1];
                 $comma = $matches[2] ?? null;
-                return str_replace($value, "<span style=\"color:black\">{$value}</span>{$comma}", rtrim($line, ','));
+                $this->lines[] = str_replace($value, "<span style=\"color:black\">{$value}</span>{$comma}", rtrim($line, ','));
+                continue;
             }
 
             // number
             preg_match('/^([\d.]*)[,]*$/', ltrim($line, ' '), $matches);
             if ($matches) {
                 $value = $matches[1];
-                return str_replace("$value", "<span style=\"color:blue\">$value</span>", $line);
+                $this->lines[] = str_replace("$value", "<span style=\"color:blue\">$value</span>", $line);
+                continue;
             }
 
             // string
             preg_match('/^"([^:]*)"[,]*$/', ltrim($line, ' '), $matches);
             if ($matches) {
                 $value = $matches[1];
-                return str_replace("\"$value\"", "<span style=\"color:green\">\"$value\"</span>", $line);
+                $this->lines[] = str_replace("\"$value\"", "<span style=\"color:green\">\"$value\"</span>", $line);
+                continue;
             }
 
             // boolean
             preg_match('/^(true|false)(?:,)?$/', ltrim($line, ' '), $matches);
             if ($matches) {
                 $value = $matches[1];
-                return str_replace($value, "<span style=\"color:red\">$value</span>", $line);
+                $this->lines[] = str_replace($value, "<span style=\"color:red\">$value</span>", $line);
+                continue;
             }
 
             // key / value
@@ -89,9 +108,9 @@ class JsonPretty
 
             $line = str_replace("\"$key\"", "<span style=\"color:black\">$key</span>", rtrim($line, ',')); // key
             $valueColor = $this->color($value); // color
-            return str_replace($value, "<span style=\"color:$valueColor\">$value</span>${comma}", $line); // value
-
-        }, explode("\n", $sample));
+            $this->lines[] = str_replace($value, "<span style=\"color:$valueColor\">$value</span>${comma}", $line); // value
+            continue;
+        }
 
         return $this;
     }
@@ -109,8 +128,8 @@ class JsonPretty
         return 'green'; // string
     }
 
-    private function jsonEncode($sample)
+    private function jsonEncodeAsArray($sample)
     {
-        return $sample === [] ? "[\n]" : json_encode((array) $sample, JSON_PRETTY_PRINT);
+        return explode("\n", json_encode((array) $sample, JSON_PRETTY_PRINT));
     }
 }
