@@ -32,8 +32,10 @@ class JsonPretty
             // empty array
             preg_match('/^(\s*)\[](,?)$/', $line, $matches);
             if ($matches) {
-                $this->lines[] = ($matches[1] ?? ''). '<span style="color:black">[</span>';
-                $this->lines[] = ($matches[1] ?? ''). '<span style="color:black">]</span>' . ($matches[2] ?? '');
+                $indent = $matches[1] ?? '';
+                $comma = $matches[2] ?? '';
+                $this->lines[] = $indent . '<span style="color:black">[</span>';
+                $this->lines[] = $indent . '<span style="color:black">]</span>' . $comma;
                 continue;
             }
 
