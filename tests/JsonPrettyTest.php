@@ -364,4 +364,42 @@ EOL;
 EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
+
+    /** @test */
+    function it_configures_different_colors()
+    {
+        $arguments = [
+            'colors' => [
+                'bracket' => 'blue',
+                'key' => 'yellow',
+                'number' => 'green',
+                'string' => 'purple',
+                'boolean' => 'pink',
+                'null' => 'black'
+            ]
+        ];
+
+        $sample = [
+            1,
+            true,
+            "hey",
+            [
+                'a' => null,
+                'b' => 123.45
+            ]
+        ];
+
+        $output = <<<EOL
+<pre><span style="color:blue">[</span>
+    <span style="color:green">1</span>,
+    <span style="color:pink">true</span>,
+    <span style="color:purple">"hey"</span>,
+    <span style="color:blue">{</span>
+        <span style="color:yellow">a</span>: <span style="color:black">null</span>,
+        <span style="color:yellow">b</span>: <span style="color:green">123.45</span>
+    <span style="color:blue">}</span>
+<span style="color:blue">]</span></pre>
+EOL;
+        $this->assertEquals($output, JsonPretty::print($sample, $arguments));
+    }
 }
