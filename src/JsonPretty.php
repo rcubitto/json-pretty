@@ -130,7 +130,7 @@ class JsonPretty
 
         if (is_numeric($string)) return $this->options['colors']['number'];
 
-        if (in_array($string, ['{', '}', '[', ']'])) return $this->options['colors']['bracket'];
+        if (in_array($string, ['{', '}', '[', ']']) || $string === '[]' || $string === '{}') return $this->options['colors']['bracket'];
 
         return $this->options['colors']['string'];
     }

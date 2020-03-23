@@ -401,4 +401,22 @@ EOL;
 EOL;
         $this->assertEquals($output, JsonPretty::print($sample, $arguments));
     }
+
+    /** @test */
+    function format_object_with_empty_array_and_empty_object()
+    {
+        $sample = [
+            'array' => [],
+            'object' => (object) []
+        ];
+
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">array</span>: <span style="color:black">[]</span>,
+    <span style="color:black">object</span>: <span style="color:black">{}</span>
+<span style="color:black">}</span></pre>
+EOL;
+
+        $this->assertEquals($output, JsonPretty::print($sample));
+    }
 }
