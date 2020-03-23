@@ -64,6 +64,24 @@ Output:
 
 **NOTE**: the string is not echoed out, just returned. So if you want to actually echo it out, don't forget to do so.
 
+## Config
+You can also configure different colors for different types.
+
+```php
+$options = [
+    'colors' => [
+        'bracket' => 'blue',    // {}[] and object keys
+        'number' => 'green',    // any is_numeric (except strings like "1")
+        'string' => 'purple',
+        'boolean' => 'pink',
+        'null' => 'black'
+    ]
+];
+
+
+\Rcubitto\JsonPretty\JsonPretty::print($sample, $options);
+```
+
 
 ### Testing
 
