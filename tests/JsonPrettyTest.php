@@ -371,7 +371,6 @@ EOL;
         $arguments = [
             'colors' => [
                 'bracket' => 'blue',
-                'key' => 'yellow',
                 'number' => 'green',
                 'string' => 'purple',
                 'boolean' => 'pink',
@@ -395,8 +394,8 @@ EOL;
     <span style="color:pink">true</span>,
     <span style="color:purple">"hey"</span>,
     <span style="color:blue">{</span>
-        <span style="color:yellow">a</span>: <span style="color:black">null</span>,
-        <span style="color:yellow">b</span>: <span style="color:green">123.45</span>
+        <span style="color:blue">a</span>: <span style="color:black">null</span>,
+        <span style="color:blue">b</span>: <span style="color:green">123.45</span>
     <span style="color:blue">}</span>
 <span style="color:blue">]</span></pre>
 EOL;

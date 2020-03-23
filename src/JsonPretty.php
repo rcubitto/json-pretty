@@ -21,7 +21,6 @@ class JsonPretty
         $defaults = [
             'colors' => [
                 'bracket' => 'black',
-                'key' => 'black',
                 'number' => 'blue',
                 'string' => 'green',
                 'boolean' => 'red',
@@ -44,12 +43,6 @@ class JsonPretty
         $sample = $this->jsonEncodeAsArray($sample);
 
         foreach ($sample as $line) {
-            $bracketColor = $this->options['colors']['bracket'];
-            $keyColor = $this->options['colors']['key'];
-            $numberColor = $this->options['colors']['number'];
-            $booleanColor = $this->options['colors']['boolean'];
-            $stringColor = $this->options['colors']['string'];
-
             // empty array
             preg_match('/^(\s*)\[](,?)$/', $line, $matches);
             if ($matches) {
@@ -62,47 +55,41 @@ class JsonPretty
 
             // opening object
             if (ltrim($line, ' ') === '{') {
-                $this->lines[] = str_replace('{', "<span style=\"color:{$bracketColor}\">{</span>", $line);
+                $this->lines[] = str_replace('{', "<span style=\"color:{$this->color('{')}\">{</span>", $line);
                 continue;
             }
 
             // closing object
-            preg_match('/^(})(,)*$/', ltrim($line, ' '), $matches);
-            if ($matches) {
-                $value = $matches[1];
-                $comma = $matches[2] ?? null;
-                $this->lines[] = str_replace($value, "<span style=\"color:{$bracketColor}\">{$value}</span>{$comma}", rtrim($line, ','));
+            if (ltrim(rtrim($line, ','), ' ') === '}') {
+                $this->lines[] = str_replace('}', "<span style=\"color:{$this->color('}')}\">}</span>", $line);
                 continue;
             }
 
             // opening array
             if (ltrim($line, ' ') === '[') {
-                $this->lines[] = str_replace('[', "<span style=\"color:{$bracketColor}\">[</span>", $line);
+                $this->lines[] = str_replace('[', "<span style=\"color:{$this->color('[')}\">[</span>", $line);
                 continue;
             }
 
             // closing array
-            preg_match('/^(])(,)*$/', ltrim($line, ' '), $matches);
-            if ($matches) {
-                $value = $matches[1];
-                $comma = $matches[2] ?? null;
-                $this->lines[] = str_replace($value, "<span style=\"color:{$bracketColor}\">{$value}</span>{$comma}", rtrim($line, ','));
+            if (ltrim(rtrim($line, ','), ' ') === ']') {
+                $this->lines[] = str_replace(']', "<span style=\"color:{$this->color(']')}\">]</span>", $line);
                 continue;
             }
 
             // number
-            preg_match('/^([\d.]*)[,]*$/', ltrim($line, ' '), $matches);
+            preg_match('/^(\d+\.?\d*)(?:,)?$/', ltrim($line, ' '), $matches);
             if ($matches) {
                 $value = $matches[1];
-                $this->lines[] = str_replace("$value", "<span style=\"color:{$numberColor}\">$value</span>", $line);
+                $this->lines[] = str_replace("$value", "<span style=\"color:{$this->color($value)}\">$value</span>", $line);
                 continue;
             }
 
             // string
-            preg_match('/^"([^:]*)"[,]*$/', ltrim($line, ' '), $matches);
+            preg_match('/^"([^\"]+)"(?:,)?$/', ltrim($line, ' '), $matches);
             if ($matches) {
                 $value = $matches[1];
-                $this->lines[] = str_replace("\"$value\"", "<span style=\"color:{$stringColor}\">\"$value\"</span>", $line);
+                $this->lines[] = str_replace("\"$value\"", "<span style=\"color:{$this->color($value)}\">\"$value\"</span>", $line);
                 continue;
             }
 
@@ -110,7 +97,7 @@ class JsonPretty
             preg_match('/^(true|false)(?:,)?$/', ltrim($line, ' '), $matches);
             if ($matches) {
                 $value = $matches[1];
-                $this->lines[] = str_replace($value, "<span style=\"color:{$booleanColor}\">$value</span>", $line);
+                $this->lines[] = str_replace($value, "<span style=\"color:{$this->color($value)}\">$value</span>", $line);
                 continue;
             }
 
@@ -122,16 +109,13 @@ class JsonPretty
                 list($value, $comma) = str_split($matches[2], strlen($matches[2]) - 1);
                 if ($comma !== ',') {
                     $value = $matches[2];
-                    $comma = '';
                 }
             } else {
                 $value = $matches[2];
-                $comma = '';
             }
 
-            $line = str_replace("\"$key\"", "<span style=\"color:{$keyColor}\">$key</span>", rtrim($line, ',')); // key
-            $valueColor = $this->color($value); // color
-            $this->lines[] = str_replace($value, "<span style=\"color:$valueColor\">$value</span>${comma}", $line); // value
+            $line = str_replace("\"$key\"", "<span style=\"color:{$this->color('{')}\">$key</span>", $line); // key
+            $this->lines[] = str_replace($value, "<span style=\"color:{$this->color($value)}\">$value</span>", $line); // value
             continue;
         }
 
