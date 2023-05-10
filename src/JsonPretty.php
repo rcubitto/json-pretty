@@ -133,8 +133,6 @@ class JsonPretty
 
         if (in_array($string, ['{', '}', '[', ']']) || $string === '[]' || $string === '{}') return $this->options['colors']['bracket'];
 
-        if(strpos($string, '"') === 0) return $this->options['colors']['string'];
-
         if(substr($string, 0, 1) === '"') return $this->options['colors']['string'];
 
         return $this->options['colors']['key'];
