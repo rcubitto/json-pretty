@@ -20,6 +20,7 @@ class JsonPretty
     {
         $defaults = [
             'colors' => [
+                'key' => 'brown',
                 'bracket' => 'black',
                 'number' => 'blue',
                 'string' => 'green',
@@ -114,7 +115,7 @@ class JsonPretty
                 $value = $matches[2];
             }
 
-            $line = str_replace("\"$key\"", "<span style=\"color:{$this->color('{')}\">$key</span>", $line); // key
+            $line = str_replace("\"$key\"", "<span style=\"color:{$this->color($key)}\">$key</span>", $line); // key
             $this->lines[] = str_replace($value, "<span style=\"color:{$this->color($value)}\">$value</span>", $line); // value
             continue;
         }
@@ -132,7 +133,11 @@ class JsonPretty
 
         if (in_array($string, ['{', '}', '[', ']']) || $string === '[]' || $string === '{}') return $this->options['colors']['bracket'];
 
-        return $this->options['colors']['string'];
+        if(strpos($string, '"') === 0) return $this->options['colors']['string'];
+
+        if(substr($string, 0, 1) === '"') return $this->options['colors']['string'];
+
+        return $this->options['colors']['key'];
     }
 
     private function jsonEncodeAsArray($sample)
