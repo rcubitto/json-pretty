@@ -2,13 +2,14 @@
 
 namespace Rcubitto\JsonPretty\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Rcubitto\JsonPretty\JsonPretty;
 
-class JsonPrettyTest extends TestCase
+final class JsonPrettyTest extends TestCase
 {
-    /** @test */
-    function format_empty_array()
+    #[Test]
+    public function format_empty_array(): void
     {
         $sample = [];
         $output = <<<EOL
@@ -19,8 +20,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_object_with_one_key_and_number()
+    #[Test]
+    public function format_object_with_one_key_and_number(): void
     {
         $sample = ['a' => 1];
 
@@ -33,8 +34,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_object_with_one_key_and_true_value()
+    #[Test]
+    public function format_object_with_one_key_and_true_value(): void
     {
         $sample = ['a' => true];
 
@@ -47,8 +48,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_object_with_one_key_and_false_value()
+    #[Test]
+    public function format_object_with_one_key_and_false_value(): void
     {
         $sample = ['a' => false];
 
@@ -61,8 +62,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_object_with_many_keys_and_numbers()
+    #[Test]
+    public function format_object_with_many_keys_and_numbers(): void
     {
         $sample = ['a' => 1, 'b' => 2];
 
@@ -76,8 +77,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_object_with_key_and_string()
+    #[Test]
+    public function format_object_with_key_and_string(): void
     {
         $sample = ['a' => 'foo'];
 
@@ -90,8 +91,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_object_with_mixed_values_string_and_number()
+    #[Test]
+    public function format_object_with_mixed_values_string_and_number(): void
     {
         $sample = ['a' => 'foo', 'b' => 2];
 
@@ -105,8 +106,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_array_that_contains_an_object_with_one_key_value()
+    #[Test]
+    public function format_array_that_contains_an_object_with_one_key_value(): void
     {
         $sample = [
             ['a' => 1]
@@ -123,8 +124,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_array_with_strings()
+    #[Test]
+    public function format_array_with_strings(): void
     {
         $sample = ['a', 'b', 'c'];
 
@@ -139,8 +140,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_array_of_numbers()
+    #[Test]
+    public function format_array_of_numbers(): void
     {
         $sample = [1, 2, 3];
 
@@ -155,8 +156,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_array_with_key_and_null_as_value()
+    #[Test]
+    public function format_array_with_key_and_null_as_value(): void
     {
         $sample = [
             'a' => null
@@ -170,8 +171,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_nested_array_with_numbers()
+    #[Test]
+    public function format_nested_array_with_numbers(): void
     {
         $sample = [
             'a' => [1,2,3]
@@ -189,8 +190,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_nested_array_with_strings()
+    #[Test]
+    public function format_nested_array_with_strings(): void
     {
         $sample = [
             'a' => ['b','c','d']
@@ -208,8 +209,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_object_with_nested_array_of_objects()
+    #[Test]
+    public function format_object_with_nested_array_of_objects(): void
     {
         $sample = [
             'name' => 'Axl Rose',
@@ -256,8 +257,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_an_object_class()
+    #[Test]
+    public function format_an_object_class(): void
     {
         $sample = new \Stdclass;
         $sample->a = 1;
@@ -271,8 +272,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_array_with_string_that_contains_commas()
+    #[Test]
+    public function format_array_with_string_that_contains_commas(): void
     {
         $sample = ["khgkh, mitch, Delaware 234234"];
 
@@ -284,8 +285,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_object_that_contains_array_of_objects_that_contain_a_string_property_with_commas()
+    #[Test]
+    public function format_object_that_contains_array_of_objects_that_contain_a_string_property_with_commas(): void
     {
         $sample = [
             'tokens' => [
@@ -309,8 +310,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_array_of_booleans()
+    #[Test]
+    public function format_array_of_booleans(): void
     {
         $sample = [
             true,
@@ -328,8 +329,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_mixed_array()
+    #[Test]
+    public function format_mixed_array(): void
     {
         $sample = [
             1,
@@ -347,8 +348,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function format_array_of_empty_arrays()
+    #[Test]
+    public function format_array_of_empty_arrays(): void
     {
         $sample = [[],[],[]];
 
@@ -365,8 +366,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function it_configures_different_colors()
+    #[Test]
+    public function it_configures_different_colors(): void
     {
         $arguments = [
             'colors' => [
@@ -402,8 +403,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample, $arguments));
     }
 
-    /** @test */
-    function format_object_with_empty_array_and_empty_object()
+    #[Test]
+    public function format_object_with_empty_array_and_empty_object(): void
     {
         $sample = [
             'array' => [],
@@ -420,8 +421,8 @@ EOL;
         $this->assertEquals($output, JsonPretty::print($sample));
     }
 
-    /** @test */
-    function escape_html_in_keys_and_values()
+    #[Test]
+    public function escape_html_in_keys_and_values(): void
     {
         $sample = [
             '<b>key</b>' => '<img src=x onerror=alert(1)>',

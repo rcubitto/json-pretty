@@ -4,11 +4,11 @@ namespace Rcubitto\JsonPretty;
 
 class JsonPretty
 {
-    protected $lines = [];
+    protected array $lines = [];
 
-    protected $options = [];
+    protected array $options = [];
 
-    public static function print($sample, $options = [])
+    public static function print(mixed $sample, array $options = []): string
     {
         return (new self)
             ->options($options)
@@ -16,7 +16,7 @@ class JsonPretty
             ->toString();
     }
 
-    public function options(array $options)
+    public function options(array $options): static
     {
         $defaults = [
             'colors' => [
@@ -33,12 +33,12 @@ class JsonPretty
         return $this;
     }
 
-    private function toString()
+    private function toString(): string
     {
         return "<pre>" . implode(PHP_EOL, $this->lines) . "</pre>";
     }
 
-    private function parse($sample)
+    private function parse(mixed $sample): static
     {
         $sample = $this->jsonEncodeAsArray($sample);
 
@@ -124,7 +124,7 @@ class JsonPretty
         return $this;
     }
 
-    private function color($string)
+    private function color(string $string): string
     {
         if ($string === 'true' || $string === 'false') return $this->options['colors']['boolean'];
 
@@ -137,7 +137,7 @@ class JsonPretty
         return $this->options['colors']['string'];
     }
 
-    private function jsonEncodeAsArray($sample)
+    private function jsonEncodeAsArray(mixed $sample): array
     {
         return explode("\n", json_encode((array) $sample, JSON_PRETTY_PRINT));
     }
