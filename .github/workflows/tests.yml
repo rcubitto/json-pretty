@@ -9,9 +9,10 @@ jobs:
         strategy:
             matrix:
                 php:
-                    - 7.3
-                    - 7.4
-                    - 8.0
+                    - '8.2'
+                    - '8.3'
+                    - '8.4'
+                    - '8.5'
 
         name: PHP ${{ matrix.php }}
 
@@ -19,7 +20,7 @@ jobs:
 
         steps:
             - name: Checkout Code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
