@@ -43,6 +43,8 @@ class JsonPretty
         $sample = $this->jsonEncodeAsArray($sample);
 
         foreach ($sample as $line) {
+            $line = htmlspecialchars($line, ENT_NOQUOTES);
+
             // empty array
             preg_match('/^(\s*)\[](,?)$/', $line, $matches);
             if ($matches) {

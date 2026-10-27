@@ -419,4 +419,24 @@ EOL;
 
         $this->assertEquals($output, JsonPretty::print($sample));
     }
+
+    /** @test */
+    function escape_html_in_keys_and_values()
+    {
+        $sample = [
+            '<b>key</b>' => '<img src=x onerror=alert(1)>',
+            'list' => ['<script>alert(1)</script> & co'],
+        ];
+
+        $output = <<<EOL
+<pre><span style="color:black">{</span>
+    <span style="color:black">&lt;b&gt;key&lt;\\/b&gt;</span>: <span style="color:green">"&lt;img src=x onerror=alert(1)&gt;"</span>,
+    <span style="color:black">list</span>: <span style="color:black">[</span>
+        <span style="color:green">"&lt;script&gt;alert(1)&lt;\\/script&gt; &amp; co"</span>
+    <span style="color:black">]</span>
+<span style="color:black">}</span></pre>
+EOL;
+
+        $this->assertEquals($output, JsonPretty::print($sample));
+    }
 }
